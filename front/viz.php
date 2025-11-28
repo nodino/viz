@@ -1,6 +1,6 @@
 <?php
 /**
- * @file viz/front/myiframe.php
+ * @file viz/front/viz.php
  * @brief Displays the configured URL in an iFrame within GLPI
  */
 
@@ -36,4 +36,5 @@ echo "<iframe src='" . $iframe_url . "' style='width: 100%; height: 90vh; border
 echo "</div>";
 
 Html::footer();
+
 ?>
