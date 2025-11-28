@@ -10,86 +10,41 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Hook to add a menu entry for the custom iFrame page
- * @return array
+ * Plugin install process
+ * @return boolean
  */
-function plugin_viz_add_menu() {
-    global $CFG_GLPI;
+function plugin_viz_install() {
+    global $DB;
     
-    $plugin = new Plugin();
-    $plugin->init('viz');
-
-    // On vérifie qu'une URL est configurée avant d'afficher le bouton
-    $iframe_url = $plugin->getOption('iframe_url');
-
-    if (empty($iframe_url)) {
-        return [];
-    }
-
-    $menu = [];
-
-    // Ajoute une entrée de menu dans la barre principale (Outils)
-    $menu['tools'] = [
-        'title'    => __('iFrame Externe', 'viz'),
-        'page'     => $CFG_GLPI["root_doc"].'/plugins/viz/front/viz.php',
-        'icon'     => 'fas fa-globe', // Icône monde
-        'tooltip'  => __('Afficher le site web configuré dans un iFrame', 'viz'),
-        'links'    => []
-    ];
-
-    return $menu;
+    // Crée la table de configuration
+    $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_viz_configs` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `iframe_url` varchar(500) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+    
+    $DB->queryOrDie($query, $DB->error());
+    
+    // Insère une valeur par défaut
+    $query = "INSERT INTO `glpi_plugin_viz_configs` (`id`, `iframe_url`) 
+              VALUES (1, 'https://example.com')
+              ON DUPLICATE KEY UPDATE `id`=1";
+    $DB->queryOrDie($query, $DB->error());
+    
+    return true;
 }
 
 /**
- * Hook to display and manage plugin configuration options
+ * Plugin uninstall process
+ * @return boolean
  */
-function plugin_viz_config_page() {
-    global $CFG_GLPI;
-
-    $plugin = new Plugin();
-    $plugin->init('viz');
-
-    // Vérifie si le formulaire a été soumis
-    if (isset($_POST['update'])) {
-        Session::checkRight('config', UPDATE); // Vérifie les droits de modification
-        $plugin->saveOptions($_POST);
-        Html::back();
-    }
-
-    // Affichage de la page de configuration
-    Html::header(__('Configuration iFrame', 'viz'));
+function plugin_viz_uninstall() {
+    global $DB;
     
-    $current_url = $plugin->getOption('iframe_url');
-
-    echo "<div class='container-fluid'>";
-    echo "<h2>" . __('URL du site à intégrer', 'viz') . "</h2>";
-    // Le formulaire poste vers config.form.php qui appelle cette fonction pour traiter la soumission
-    echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/plugins/viz/front/config.form.php'>";
-
-    echo "<table class='tab_cadre_fixe'>";
-
-    // Champ de saisie de l'URL
-    echo "<tr class='tab_bg_1'>";
-    echo "<td style='width: 20%;'>" . __('URL complète du site', 'viz') . "</td>";
-    echo "<td>";
-    echo "<input type='url' name='iframe_url' value='" . htmlspecialchars($current_url, ENT_QUOTES, 'UTF-8') . "' size='100' placeholder='Exemple: https://www.monsite.com/' required>";
-
-    echo "<div class='info'>" . __('Attention: de nombreux sites (comme Google) bloquent l\'affichage via iFrame (X-Frame-Options).', 'viz') . "</div>";
-    echo "</td>";
-    echo "</tr>";
-
-    echo "<tr class='tab_bg_2'>";
-    echo "<td colspan='2' class='center'>";
-    echo "<input type='submit' name='update' class='submit' value='" . __('Sauvegarder', 'viz') . "'>";
-    echo "</td>";
-    echo "</tr>";
+    // Supprime la table de configuration
+    $query = "DROP TABLE IF EXISTS `glpi_plugin_viz_configs`";
+    $DB->queryOrDie($query, $DB->error());
     
-    echo "</table>";
-    echo "</form>";
-    echo "</div>";
-
-    Html::footer();
+    return true;
 }
-
 ?>
-
