@@ -31,10 +31,12 @@ echo "<h2>" . __('Site Web Externe', 'viz') . "</h2>";
 
 // Le code de l'iframe
 // Note: Utilisation de '100vh' pour une hauteur maximale dans la fenêtre GLPI
-echo "<iframe src='" . $iframe_url . "' style='width: 100%; height: 90vh; border: none;'></iframe>";
+echo "<iframe src='" . htmlspecialchars($iframe_url, ENT_QUOTES, 'UTF-8') . "' style='width: 100%; height: 90vh; border: none;'></iframe>";
+
 
 echo "</div>";
 
 Html::footer();
 
 ?>
+
