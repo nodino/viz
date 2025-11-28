@@ -31,7 +31,7 @@ function plugin_viz_add_menu() {
     // Ajoute une entrée de menu dans la barre principale (Outils)
     $menu['tools'] = [
         'title'    => __('iFrame Externe', 'viz'),
-        'page'     => $CFG_GLPI["root_doc"].'/plugins/viz/front/myiframe.php',
+        'page'     => $CFG_GLPI["root_doc"].'/plugins/viz/front/viz.php',
         'icon'     => 'fas fa-globe', // Icône monde
         'tooltip'  => __('Afficher le site web configuré dans un iFrame', 'viz'),
         'links'    => []
@@ -89,4 +89,5 @@ function plugin_viz_config_page() {
 
     Html::footer();
 }
+
 ?>
