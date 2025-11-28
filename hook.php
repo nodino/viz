@@ -72,7 +72,8 @@ function plugin_viz_config_page() {
     echo "<tr class='tab_bg_1'>";
     echo "<td style='width: 20%;'>" . __('URL complète du site', 'viz') . "</td>";
     echo "<td>";
-    echo "<input type='url' name='iframe_url' value='" . $current_url . "' size='100' placeholder='Exemple: https://www.monsite.com/' required>";
+    echo "<input type='url' name='iframe_url' value='" . htmlspecialchars($current_url, ENT_QUOTES, 'UTF-8') . "' size='100' placeholder='Exemple: https://www.monsite.com/' required>";
+
     echo "<div class='info'>" . __('Attention: de nombreux sites (comme Google) bloquent l\'affichage via iFrame (X-Frame-Options).', 'viz') . "</div>";
     echo "</td>";
     echo "</tr>";
@@ -91,3 +92,4 @@ function plugin_viz_config_page() {
 }
 
 ?>
+
